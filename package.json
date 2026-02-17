@@ -1,5 +1,5 @@
 {
-  "name": "@asachs01/node-ninjaone",
+  "name": "@wyre-technology/node-ninjaone",
   "version": "0.0.0-development",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
@@ -47,16 +47,16 @@
     "remote-monitoring",
     "endpoint-management"
   ],
-  "author": "Aaron Sachs",
+  "author": "Wyre Technology",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/asachs01/node-ninjaone.git"
+    "url": "git+https://github.com/wyre-technology/node-ninjaone.git"
   },
   "bugs": {
-    "url": "https://github.com/asachs01/node-ninjaone/issues"
+    "url": "https://github.com/wyre-technology/node-ninjaone/issues"
   },
-  "homepage": "https://github.com/asachs01/node-ninjaone#readme",
+  "homepage": "https://github.com/wyre-technology/node-ninjaone#readme",
   "engines": {
     "node": ">=18.0.0"
   },
