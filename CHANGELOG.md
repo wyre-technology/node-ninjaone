@@ -1,3 +1,16 @@
+# 1.0.0 (2026-02-17)
+
+
+### Bug Fixes
+
+* update package scope from [@asachs01](https://github.com/asachs01) to [@wyre-technology](https://github.com/wyre-technology) ([0fd9864](https://github.com/wyre-technology/node-ninjaone/commit/0fd98641f03be445aa69f44ec53d2f705ffa3b46))
+
+
+### Features
+
+* **ci:** add release workflow with semantic-release and GitHub Packages publishing ([c99742f](https://github.com/wyre-technology/node-ninjaone/commit/c99742f1de65043af2b5eae384a5867fb6cddcb4))
+* Initial implementation of @asachs01/node-ninjaone ([4747bc4](https://github.com/wyre-technology/node-ninjaone/commit/4747bc489ff89b75095e3f151d67606056b892d2))
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
