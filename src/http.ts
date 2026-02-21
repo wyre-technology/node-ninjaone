@@ -138,12 +138,16 @@ export class HttpClient {
       return {} as T;
     }
 
-    // Get response body for error details
+    // Read body as text first, then try to parse as JSON.
+    // Response.body is a stream that can only be consumed once —
+    // if response.json() fails mid-parse, response.text() would throw
+    // "Body is unusable: Body has already been read".
     let responseBody: unknown;
+    const rawText = await response.text();
     try {
-      responseBody = await response.json();
+      responseBody = JSON.parse(rawText);
     } catch {
-      responseBody = await response.text();
+      responseBody = rawText;
     }
 
     switch (response.status) {

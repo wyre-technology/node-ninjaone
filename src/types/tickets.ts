@@ -2,7 +2,7 @@
  * Ticket types for NinjaOne
  */
 
-import type { BaseListParams, TimestampFields } from './common.js';
+import type { TimestampFields } from './common.js';
 
 /**
  * Ticket status
@@ -74,9 +74,23 @@ export interface Ticket extends TimestampFields {
 }
 
 /**
- * Ticket list parameters
+ * Ticket list parameters.
+ *
+ * NinjaOne uses a board-based query model for listing tickets.
+ * Tickets are queried via POST /api/v2/ticketing/trigger/board/{boardId}/run
+ * with filters and pagination in the request body.
  */
-export interface TicketListParams extends BaseListParams {
+export interface TicketListParams {
+  /** Board ID to query (default: 1, typically the "All Tickets" board) */
+  boardId?: number;
+  /** Number of results per page (default: 50) */
+  pageSize?: number;
+  /** Cursor ID for pagination (0 for first page) */
+  lastCursorId?: number;
+  /** Sort field */
+  sortBy?: string;
+  /** Sort direction */
+  sortOrder?: 'asc' | 'desc';
   /** Filter by organization ID */
   organizationId?: number;
   /** Filter by device ID */
@@ -85,20 +99,6 @@ export interface TicketListParams extends BaseListParams {
   status?: TicketStatus;
   /** Filter by priority */
   priority?: TicketPriority;
-  /** Filter by assignee UID */
-  assigneeUid?: string;
-  /** Filter by requester UID */
-  requesterUid?: string;
-  /** Filter by ticket form ID */
-  ticketFormId?: number;
-  /** Created after timestamp */
-  createdAfter?: number;
-  /** Created before timestamp */
-  createdBefore?: number;
-  /** Updated after timestamp */
-  updatedAfter?: number;
-  /** Updated before timestamp */
-  updatedBefore?: number;
 }
 
 /**

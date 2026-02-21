@@ -132,7 +132,7 @@ export const handlers = [
   }),
 
   // Tickets endpoints
-  http.get(`${BASE_URL}/api/v2/ticketing/ticket`, () => {
+  http.post(`${BASE_URL}/api/v2/ticketing/trigger/board/:boardId/run`, () => {
     return HttpResponse.json(fixtures.tickets.list);
   }),
 
@@ -159,12 +159,16 @@ export const handlers = [
     return new HttpResponse(null, { status: 204 });
   }),
 
-  http.get(`${BASE_URL}/api/v2/ticketing/ticket/:id/comment`, () => {
+  http.get(`${BASE_URL}/api/v2/ticketing/ticket/:id/log-entry`, () => {
     return HttpResponse.json(fixtures.tickets.comments);
   }),
 
   http.post(`${BASE_URL}/api/v2/ticketing/ticket/:id/comment`, () => {
     return HttpResponse.json(fixtures.tickets.commentCreated);
+  }),
+
+  http.get(`${BASE_URL}/api/v2/ticketing/trigger/board`, () => {
+    return HttpResponse.json([{ id: 1, name: 'All Tickets' }]);
   }),
 
   http.get(`${BASE_URL}/api/v2/ticketing/ticket-form`, () => {

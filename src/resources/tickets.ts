@@ -1,5 +1,9 @@
 /**
  * Tickets resource operations
+ *
+ * NinjaOne's ticketing API uses a board-based query model:
+ * - Listing tickets requires POST to /api/v2/ticketing/trigger/board/{boardId}/run
+ * - Comments/activity are accessed via /log-entry (not /comment)
  */
 
 import type { HttpClient } from '../http.js';
@@ -26,12 +30,54 @@ export class TicketsResource {
   }
 
   /**
-   * List tickets
+   * List tickets for a board.
+   *
+   * NinjaOne requires querying tickets via a board. The default board ID
+   * is typically 1 (the system "All Tickets" board). You can discover
+   * boards via listBoards().
    */
   async list(params?: TicketListParams): Promise<TicketListResponse> {
-    return this.httpClient.request<TicketListResponse>('/api/v2/ticketing/ticket', {
-      params: this.buildListParams(params),
-    });
+    const boardId = params?.boardId ?? 1;
+    const body: Record<string, unknown> = {
+      sortBy: [] as unknown[],
+      filters: [] as unknown[],
+      pageSize: params?.pageSize ?? 50,
+      lastCursorId: params?.lastCursorId ?? 0,
+    };
+
+    // Build sort criteria
+    if (params?.sortBy) {
+      body.sortBy = [{ field: params.sortBy, direction: params.sortOrder ?? 'desc' }];
+    }
+
+    // Build filter criteria from params
+    const filters: Array<{ field: string; operator: string; value: unknown }> = [];
+    if (params?.status) {
+      filters.push({ field: 'status', operator: 'is', value: params.status });
+    }
+    if (params?.priority) {
+      filters.push({ field: 'priority', operator: 'is', value: params.priority });
+    }
+    if (params?.organizationId) {
+      filters.push({ field: 'organizationId', operator: 'is', value: params.organizationId });
+    }
+    if (params?.deviceId) {
+      filters.push({ field: 'nodeId', operator: 'is', value: params.deviceId });
+    }
+    if (filters.length > 0) {
+      body.filters = filters;
+    }
+
+    const response = await this.httpClient.request<Ticket[] | TicketListResponse>(
+      `/api/v2/ticketing/trigger/board/${boardId}/run`,
+      { method: 'POST', body }
+    );
+
+    // Normalize response — API may return a raw array or wrapped object
+    if (Array.isArray(response)) {
+      return { tickets: response };
+    }
+    return response;
   }
 
   /**
@@ -71,10 +117,20 @@ export class TicketsResource {
   }
 
   /**
-   * Get ticket comments
+   * Get ticket log entries (comments and activity).
+   *
+   * The NinjaOne API uses /log-entry for ticket comments/activity.
+   * Filter by type to get only comments: type=COMMENT
    */
-  async getComments(ticketId: number): Promise<TicketComment[]> {
-    return this.httpClient.request<TicketComment[]>(`/api/v2/ticketing/ticket/${ticketId}/comment`);
+  async getComments(ticketId: number, type?: string): Promise<TicketComment[]> {
+    const params: Record<string, string | number | boolean | undefined> = {};
+    if (type) {
+      params.type = type;
+    }
+    return this.httpClient.request<TicketComment[]>(
+      `/api/v2/ticketing/ticket/${ticketId}/log-entry`,
+      { params }
+    );
   }
 
   /**
@@ -95,6 +151,13 @@ export class TicketsResource {
   }
 
   /**
+   * List available ticket boards
+   */
+  async listBoards(): Promise<unknown[]> {
+    return this.httpClient.request<unknown[]>('/api/v2/ticketing/trigger/board');
+  }
+
+  /**
    * List available ticket forms
    */
   async listForms(): Promise<TicketForm[]> {
@@ -106,20 +169,5 @@ export class TicketsResource {
    */
   async getForm(id: number): Promise<TicketForm> {
     return this.httpClient.request<TicketForm>(`/api/v2/ticketing/ticket-form/${id}`);
-  }
-
-  /**
-   * Build query parameters from list params
-   */
-  private buildListParams<T extends object>(params?: T): Record<string, string | number | boolean | undefined> {
-    if (!params) return {};
-
-    const result: Record<string, string | number | boolean | undefined> = {};
-    for (const [key, value] of Object.entries(params)) {
-      if (value !== undefined) {
-        result[key] = value as string | number | boolean;
-      }
-    }
-    return result;
   }
 }
