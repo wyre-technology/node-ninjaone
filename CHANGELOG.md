@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/wyre-technology/node-ninjaone/compare/v1.0.0...v1.0.1) (2026-02-21)
+
+
+### Bug Fixes
+
+* correct ticketing API endpoints and HTTP response body handling ([6054b0a](https://github.com/wyre-technology/node-ninjaone/commit/6054b0a4efa42f799c4f0ca591128f238cefc7b6))
+
 # 1.0.0 (2026-02-17)
 
 
