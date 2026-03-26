@@ -3,6 +3,9 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import { http, HttpResponse } from 'msw';
+import { server } from '../mocks/server.js';
+import * as fixtures from '../fixtures/index.js';
 import { NinjaOneClient } from '../../src/client.js';
 import { NinjaOneNotFoundError } from '../../src/errors.js';
 
@@ -99,6 +102,53 @@ describe('DevicesResource', () => {
 
       expect(inventory.processors).toHaveLength(1);
       expect(inventory.memory?.totalRam).toBe(34359738368);
+    });
+  });
+
+  describe('response parsing robustness', () => {
+    it('should parse JSON response even without application/json content-type', async () => {
+      // Simulate an API returning JSON data with a non-standard content-type.
+      // This was the root cause of msp-claude-plugins#22 — NinjaOne API responses
+      // were silently discarded when the content-type header was missing or unexpected.
+      server.use(
+        http.get('https://app.ninjarmm.com/api/v2/devices', () => {
+          return new HttpResponse(JSON.stringify(fixtures.devices.list), {
+            status: 200,
+            headers: { 'Content-Type': 'text/plain' },
+          });
+        }),
+      );
+
+      const devices = await client.devices.list();
+      expect(devices).toHaveLength(2);
+      expect(devices[0]?.displayName).toBe('DESKTOP-001');
+    });
+
+    it('should parse JSON response with no content-type header', async () => {
+      server.use(
+        http.get('https://app.ninjarmm.com/api/v2/devices', () => {
+          return new HttpResponse(JSON.stringify(fixtures.devices.list), {
+            status: 200,
+          });
+        }),
+      );
+
+      const devices = await client.devices.list();
+      expect(devices).toHaveLength(2);
+    });
+
+    it('should return empty object for truly empty response body', async () => {
+      server.use(
+        http.get('https://app.ninjarmm.com/api/v2/device/101', () => {
+          return new HttpResponse('', {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }),
+      );
+
+      const device = await client.devices.get(101);
+      expect(device).toEqual({});
     });
   });
 });

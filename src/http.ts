@@ -91,6 +91,7 @@ export class HttpClient {
     // Get the auth token
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
+      'Accept': 'application/json',
     };
 
     if (!skipAuth) {
@@ -129,13 +130,20 @@ export class HttpClient {
       if (response.status === 204) {
         return {} as T;
       }
-      // Handle JSON responses
-      const contentType = response.headers.get('content-type');
-      if (contentType?.includes('application/json')) {
-        return response.json() as Promise<T>;
+      // Always try to parse response body as JSON.
+      // Some APIs (including NinjaOne) may omit or vary the Content-Type
+      // header, so relying solely on content-type check causes silent
+      // data loss — returning {} instead of the actual response.
+      const text = await response.text();
+      if (!text || text.trim().length === 0) {
+        return {} as T;
       }
-      // Return empty object for non-JSON responses
-      return {} as T;
+      try {
+        return JSON.parse(text) as T;
+      } catch {
+        // If JSON parsing fails, return empty object for non-JSON responses
+        return {} as T;
+      }
     }
 
     // Read body as text first, then try to parse as JSON.
