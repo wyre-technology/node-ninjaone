@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/wyre-technology/node-ninjaone/compare/v1.0.1...v1.0.2) (2026-03-26)
+
+
+### Bug Fixes
+
+* parse JSON response body regardless of content-type header ([a5566d5](https://github.com/wyre-technology/node-ninjaone/commit/a5566d570583beb189bee19a7fadf953a07bc2a6)), closes [msp-claude-plugins#22](https://github.com/msp-claude-plugins/issues/22)
+
 ## [1.0.1](https://github.com/wyre-technology/node-ninjaone/compare/v1.0.0...v1.0.1) (2026-02-21)
 
 
