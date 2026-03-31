@@ -6,7 +6,7 @@ Comprehensive, fully-typed Node.js/TypeScript library for the NinjaOne/NinjaRMM 
 
 - Full TypeScript support with comprehensive type definitions
 - OAuth 2.0 authentication with automatic token refresh
-- Support for all three regional endpoints (US, EU, Oceania)
+- Support for all six regional endpoints (US, EU, Oceania, Canada, US2, Federal)
 - Built-in rate limiting with configurable thresholds
 - Automatic retry logic for rate limits and server errors
 - Clean, intuitive API design
@@ -25,7 +25,7 @@ import { NinjaOneClient } from '@asachs01/node-ninjaone';
 const client = new NinjaOneClient({
   clientId: process.env.NINJAONE_CLIENT_ID!,
   clientSecret: process.env.NINJAONE_CLIENT_SECRET!,
-  region: 'us', // 'us' | 'eu' | 'oc'
+  region: 'us', // 'us' | 'eu' | 'oc' | 'ca' | 'us2' | 'fed'
 });
 
 // List organizations

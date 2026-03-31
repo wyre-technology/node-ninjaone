@@ -5,7 +5,7 @@
 /**
  * NinjaOne regional endpoints
  */
-export type NinjaOneRegion = 'us' | 'eu' | 'oc';
+export type NinjaOneRegion = 'us' | 'eu' | 'oc' | 'ca' | 'us2' | 'fed';
 
 /**
  * Regional base URLs
@@ -14,6 +14,9 @@ export const REGION_URLS: Record<NinjaOneRegion, string> = {
   us: 'https://app.ninjarmm.com',
   eu: 'https://eu.ninjarmm.com',
   oc: 'https://oc.ninjarmm.com',
+  ca: 'https://ca.ninjarmm.com',
+  us2: 'https://us2.ninjarmm.com',
+  fed: 'https://fed.ninjarmm.com',
 };
 
 /**
@@ -94,7 +97,7 @@ export function resolveConfig(config: NinjaOneConfig): ResolvedConfig {
     const region = config.region ?? 'us';
     const regionUrl = REGION_URLS[region];
     if (!regionUrl) {
-      throw new Error(`Invalid region: ${region}. Valid regions are: us, eu, oc`);
+      throw new Error(`Invalid region: ${region}. Valid regions are: us, eu, oc, ca, us2, fed`);
     }
     baseUrl = regionUrl;
   }

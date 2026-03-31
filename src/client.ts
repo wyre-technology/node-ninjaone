@@ -21,7 +21,7 @@ import { WebhooksResource } from './resources/webhooks.js';
  * const client = new NinjaOneClient({
  *   clientId: process.env.NINJAONE_CLIENT_ID!,
  *   clientSecret: process.env.NINJAONE_CLIENT_SECRET!,
- *   region: 'us', // or 'eu', 'oc'
+ *   region: 'us', // or 'eu', 'oc', 'ca', 'us2', 'fed'
  * });
  *
  * // List organizations
