@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/wyre-technology/node-ninjaone/compare/v1.1.0...v1.1.1) (2026-05-20)
+
+
+### Bug Fixes
+
+* correct packaging exports so CJS/ESM consumers resolve ([#3](https://github.com/wyre-technology/node-ninjaone/issues/3)) ([1f23f92](https://github.com/wyre-technology/node-ninjaone/commit/1f23f925530122d1d1eae154a8dbecd75f72d1cd))
+
 # [1.1.0](https://github.com/wyre-technology/node-ninjaone/compare/v1.0.2...v1.1.0) (2026-03-31)
 
 
