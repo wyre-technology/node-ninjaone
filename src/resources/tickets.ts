@@ -53,13 +53,32 @@ export class TicketsResource {
     // Build filter criteria from params
     const filters: Array<{ field: string; operator: string; value: unknown }> = [];
     if (params?.status) {
-      filters.push({ field: 'status', operator: 'is', value: params.status });
+      // NinjaOne's filter API expects the numeric parent statusId, not the enum string.
+      // Custom tenant statuses inherit one of these via parentId.
+      // 1000/2000/3000/6000 confirmed via live tenant; 4000/5000/7000 inferred from
+      // NinjaOne docs and the 1000-stride pattern — verify against your tenant if you
+      // depend on filtering by IN_PROGRESS / RESOLVED / ON_HOLD.
+      const STATUS_PARENT_ID: Record<string, number> = {
+        NEW: 1000,
+        OPEN: 2000,
+        WAITING: 3000,
+        IN_PROGRESS: 4000,
+        RESOLVED: 5000,
+        CLOSED: 6000,
+        ON_HOLD: 7000,
+      };
+      const id = STATUS_PARENT_ID[params.status];
+      if (id !== undefined) {
+        filters.push({ field: 'status', operator: 'is', value: id });
+      }
     }
     if (params?.priority) {
       filters.push({ field: 'priority', operator: 'is', value: params.priority });
     }
     if (params?.organizationId) {
-      filters.push({ field: 'organizationId', operator: 'is', value: params.organizationId });
+      // Ticket payloads carry `clientId`, not `organizationId` — the filter field
+      // must match the ticket column name or the API returns 400.
+      filters.push({ field: 'clientId', operator: 'is', value: params.organizationId });
     }
     if (params?.deviceId) {
       filters.push({ field: 'nodeId', operator: 'is', value: params.deviceId });
