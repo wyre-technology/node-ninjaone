@@ -81,7 +81,11 @@ export interface Ticket extends TimestampFields {
  * with filters and pagination in the request body.
  */
 export interface TicketListParams {
-  /** Board ID to query (default: 1, typically the "All Tickets" board) */
+  /**
+   * Board ID to query. Defaults to 1, which on most tenants is the "All Tickets"
+   * board — but this is not guaranteed. Call `listBoards()` to discover the
+   * board IDs for the current tenant if you need a specific board.
+   */
   boardId?: number;
   /** Number of results per page (default: 50) */
   pageSize?: number;

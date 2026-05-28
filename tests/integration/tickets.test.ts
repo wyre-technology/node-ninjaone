@@ -3,8 +3,11 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import { http, HttpResponse } from 'msw';
 import { NinjaOneClient } from '../../src/client.js';
 import { NinjaOneNotFoundError } from '../../src/errors.js';
+import { server } from '../mocks/server.js';
+import * as ticketFixtures from '../fixtures/tickets.js';
 
 describe('TicketsResource', () => {
   const client = new NinjaOneClient({
@@ -19,6 +22,61 @@ describe('TicketsResource', () => {
 
       expect(result.tickets).toHaveLength(2);
       expect(result.totalCount).toBe(2);
+    });
+
+    it('should map status enum to parent statusId in filter body', async () => {
+      let capturedBody: Record<string, unknown> | undefined;
+      server.use(
+        http.post(
+          'https://app.ninjarmm.com/api/v2/ticketing/trigger/board/:boardId/run',
+          async ({ request }) => {
+            capturedBody = (await request.json()) as Record<string, unknown>;
+            return HttpResponse.json(ticketFixtures.list);
+          }
+        )
+      );
+
+      await client.tickets.list({ boardId: 2, status: 'OPEN' });
+
+      expect(capturedBody?.filters).toEqual([
+        { field: 'status', operator: 'is', value: 2000 },
+      ]);
+    });
+
+    it('should map organizationId filter to clientId field', async () => {
+      let capturedBody: Record<string, unknown> | undefined;
+      server.use(
+        http.post(
+          'https://app.ninjarmm.com/api/v2/ticketing/trigger/board/:boardId/run',
+          async ({ request }) => {
+            capturedBody = (await request.json()) as Record<string, unknown>;
+            return HttpResponse.json(ticketFixtures.list);
+          }
+        )
+      );
+
+      await client.tickets.list({ boardId: 2, organizationId: 42 });
+
+      expect(capturedBody?.filters).toEqual([
+        { field: 'clientId', operator: 'is', value: 42 },
+      ]);
+    });
+
+    it('should forward lastCursorId for pagination', async () => {
+      let capturedBody: Record<string, unknown> | undefined;
+      server.use(
+        http.post(
+          'https://app.ninjarmm.com/api/v2/ticketing/trigger/board/:boardId/run',
+          async ({ request }) => {
+            capturedBody = (await request.json()) as Record<string, unknown>;
+            return HttpResponse.json(ticketFixtures.list);
+          }
+        )
+      );
+
+      await client.tickets.list({ boardId: 2, lastCursorId: 50 });
+
+      expect(capturedBody?.lastCursorId).toBe(50);
     });
   });
 
