@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/wyre-technology/node-ninjaone/compare/v1.1.1...v1.1.2) (2026-05-28)
+
+
+### Bug Fixes
+
+* **tickets:** correct filter field names and value shapes for list() ([#16](https://github.com/wyre-technology/node-ninjaone/issues/16)) ([73f0b8a](https://github.com/wyre-technology/node-ninjaone/commit/73f0b8a63105f0e17bffba9150dc203cab9f4acb)), closes [#15](https://github.com/wyre-technology/node-ninjaone/issues/15)
+
 ## [1.1.1](https://github.com/wyre-technology/node-ninjaone/compare/v1.1.0...v1.1.1) (2026-05-20)
 
 
