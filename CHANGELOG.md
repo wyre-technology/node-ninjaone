@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/wyre-technology/node-ninjaone/compare/v1.1.2...v1.1.3) (2026-06-08)
+
+
+### Bug Fixes
+
+* **security:** bump vitest + @vitest/coverage-v8 1.x -> 3.2.6 ([#26](https://github.com/wyre-technology/node-ninjaone/issues/26)) ([f9dbb5e](https://github.com/wyre-technology/node-ninjaone/commit/f9dbb5eb7fc3c1ae6651b273c0cf583ebd0877e6))
+
 ## [1.1.2](https://github.com/wyre-technology/node-ninjaone/compare/v1.1.1...v1.1.2) (2026-05-28)
 
 
