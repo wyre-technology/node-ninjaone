@@ -1,10 +1,11 @@
-'use strict';
-
 // src/config.ts
 var REGION_URLS = {
   us: "https://app.ninjarmm.com",
   eu: "https://eu.ninjarmm.com",
-  oc: "https://oc.ninjarmm.com"
+  oc: "https://oc.ninjarmm.com",
+  ca: "https://ca.ninjarmm.com",
+  us2: "https://us2.ninjarmm.com",
+  fed: "https://fed.ninjarmm.com"
 };
 var DEFAULT_RATE_LIMIT_CONFIG = {
   enabled: true,
@@ -24,7 +25,7 @@ function resolveConfig(config) {
     const region = config.region ?? "us";
     const regionUrl = REGION_URLS[region];
     if (!regionUrl) {
-      throw new Error(`Invalid region: ${region}. Valid regions are: us, eu, oc`);
+      throw new Error(`Invalid region: ${region}. Valid regions are: us, eu, oc, ca, us2, fed`);
     }
     baseUrl = regionUrl;
   }
@@ -863,13 +864,25 @@ var TicketsResource = class {
     }
     const filters = [];
     if (params?.status) {
-      filters.push({ field: "status", operator: "is", value: params.status });
+      const STATUS_PARENT_ID = {
+        NEW: 1e3,
+        OPEN: 2e3,
+        WAITING: 3e3,
+        IN_PROGRESS: 4e3,
+        RESOLVED: 5e3,
+        CLOSED: 6e3,
+        ON_HOLD: 7e3
+      };
+      const id = STATUS_PARENT_ID[params.status];
+      if (id !== void 0) {
+        filters.push({ field: "status", operator: "is", value: id });
+      }
     }
     if (params?.priority) {
       filters.push({ field: "priority", operator: "is", value: params.priority });
     }
     if (params?.organizationId) {
-      filters.push({ field: "organizationId", operator: "is", value: params.organizationId });
+      filters.push({ field: "clientId", operator: "is", value: params.organizationId });
     }
     if (params?.deviceId) {
       filters.push({ field: "nodeId", operator: "is", value: params.deviceId });
@@ -1074,15 +1087,6 @@ var NinjaOneClient = class {
   }
 };
 
-exports.DEFAULT_RATE_LIMIT_CONFIG = DEFAULT_RATE_LIMIT_CONFIG;
-exports.NinjaOneAuthenticationError = NinjaOneAuthenticationError;
-exports.NinjaOneClient = NinjaOneClient;
-exports.NinjaOneError = NinjaOneError;
-exports.NinjaOneForbiddenError = NinjaOneForbiddenError;
-exports.NinjaOneNotFoundError = NinjaOneNotFoundError;
-exports.NinjaOneRateLimitError = NinjaOneRateLimitError;
-exports.NinjaOneServerError = NinjaOneServerError;
-exports.NinjaOneValidationError = NinjaOneValidationError;
-exports.REGION_URLS = REGION_URLS;
+export { DEFAULT_RATE_LIMIT_CONFIG, NinjaOneAuthenticationError, NinjaOneClient, NinjaOneError, NinjaOneForbiddenError, NinjaOneNotFoundError, NinjaOneRateLimitError, NinjaOneServerError, NinjaOneValidationError, REGION_URLS };
 //# sourceMappingURL=index.js.map
 //# sourceMappingURL=index.js.map
